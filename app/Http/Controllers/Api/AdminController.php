@@ -22,7 +22,7 @@ class AdminController extends Controller
                 ], 403);
             }
 
-            $admins = User::whereIn('role', ['ADMIN', 'STAFF'])->get();
+            $admins = User::whereIn('role', ['ADMIN', 'STAFF'])->orderBy('created_at', 'desc')->get();
 
             return response()->json([
                 'success' => true,

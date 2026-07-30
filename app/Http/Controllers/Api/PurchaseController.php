@@ -66,8 +66,8 @@ class PurchaseController extends Controller
             ];
 
             $purchases = $query->orderBy('is_opening', 'desc')
-                ->orderBy('date', 'asc')
-                ->orderBy('sl_no', 'asc')
+                ->orderBy('date', 'desc')
+                ->orderBy('sl_no', 'desc')
                 ->paginate($perPage);
 
             return response()->json([

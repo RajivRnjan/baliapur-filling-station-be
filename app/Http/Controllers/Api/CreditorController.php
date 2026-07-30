@@ -179,9 +179,12 @@ class CreditorController extends Controller
 
     // --- Creditor Ledger & Transactions ---
 
-    public function getLedger($id)
+    public function getLedger(Request $request, $id)
     {
         try {
+            $perPage = intval($request->get('per_page', 10));
+            $page = intval($request->get('page', 1));
+
             $creditor = Creditor::findOrFail($id);
             $transactions = $creditor->transactions()
                 ->orderBy('date', 'asc')
@@ -218,15 +221,32 @@ class CreditorController extends Controller
                 ];
             }
 
+            $currentBalance = $balance;
+
+            // Running balance must be computed in chronological order first (above),
+            // then reversed so the ledger displays newest entries first.
+            $ledgerEntries = array_reverse($ledgerEntries);
+
+            $total = count($ledgerEntries);
+            $pagedEntries = array_slice($ledgerEntries, ($page - 1) * $perPage, $perPage);
+
+            $paginatedLedger = new \Illuminate\Pagination\LengthAwarePaginator(
+                $pagedEntries,
+                $total,
+                $perPage,
+                $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+
             return response()->json([
                 'success' => true,
                 'creditor' => [
                     'id' => $creditor->id,
                     'name' => $creditor->name,
                     'opening_balance' => floatval($creditor->opening_balance),
-                    'current_balance' => round($balance, 2),
+                    'current_balance' => round($currentBalance, 2),
                 ],
-                'ledger' => $ledgerEntries
+                'ledger' => $paginatedLedger
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([

@@ -1,0 +1,18 @@
+0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@10.9.3
+2 info using node@v22.20.0
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/Applications/XAMPP/xamppfiles/htdocs/baliapur-filling-station-be/.npmrc
+5 silly config load:file:/Users/rajivranjan/.npmrc
+6 silly config load:file:/usr/local/etc/npmrc
+7 verbose title npm config get prefix
+8 verbose argv "config" "get" "prefix"
+9 verbose logfile logs-max:10 dir:/Applications/XAMPP/xamppfiles/htdocs/baliapur-filling-station-be/.npm-cache-local/_logs/2026-07-30T16_26_34_365Z-
+10 verbose logfile /Applications/XAMPP/xamppfiles/htdocs/baliapur-filling-station-be/.npm-cache-local/_logs/2026-07-30T16_26_34_365Z-debug-0.log
+11 silly logfile done cleaning log files
+12 verbose cwd /Applications/XAMPP/xamppfiles/htdocs/baliapur-filling-station-be
+13 verbose os Darwin 25.5.0
+14 verbose node v22.20.0
+15 verbose npm  v10.9.3
+16 verbose exit 0
+17 info ok
