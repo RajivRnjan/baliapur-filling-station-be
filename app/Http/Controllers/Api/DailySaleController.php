@@ -941,15 +941,15 @@ class DailySaleController extends Controller
     }
 
     /**
-     * Update rates or closing readings for a specific day. (Super Admin Only)
+     * Update rates or closing readings for a specific day. (Super Admin & Admin)
      */
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->role !== 'SUPER_ADMIN') {
+            if (!in_array($request->user()->role, ['SUPER_ADMIN', 'ADMIN'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Unauthorized. Only Super Admin can edit daily sales.'
+                    'message' => 'Unauthorized. Only Super Admin and Admin can edit daily sales.'
                 ], 403);
             }
 

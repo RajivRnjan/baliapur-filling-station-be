@@ -134,10 +134,10 @@ class PurchaseController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->role !== 'SUPER_ADMIN') {
+            if (!in_array($request->user()->role, ['SUPER_ADMIN', 'ADMIN'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Unauthorized. Only Super Admin can edit purchase records.'
+                    'message' => 'Unauthorized. Only Super Admin and Admin can edit purchase records.'
                 ], 403);
             }
 
@@ -258,6 +258,7 @@ class PurchaseController extends Controller
             $columns = [
                 'Sl. No.', 
                 'DATE', 
+                'INVOICE NUMBER',
                 'MS (KL)', 
                 'MS (Litres)', 
                 'HSD (KL)', 
@@ -292,6 +293,7 @@ class PurchaseController extends Controller
                     $row = [
                         $slNo++,
                         $purchase->date ? \Carbon\Carbon::parse($purchase->date)->format('d-m-Y') : '-',
+                        $purchase->remarks ?: '-',
                         $ms / 1000,
                         $ms,
                         $hsd / 1000,
@@ -305,7 +307,7 @@ class PurchaseController extends Controller
 
                 if ($slNo > 1) {
                     fputcsv($file, [
-                        '', 'TOTAL',
+                        '', 'TOTAL', '',
                         $t_ms_kl, $t_ms,
                         $t_hsd_kl, $t_hsd,
                         $t_xp_kl, $t_xp,

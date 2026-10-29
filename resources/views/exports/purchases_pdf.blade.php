@@ -52,6 +52,7 @@
             <tr>
                 <th>Sl. No.</th>
                 <th>DATE</th>
+                <th>INVOICE NUMBER</th>
                 <th>MS (KL)</th>
                 <th>MS (Litres)</th>
                 <th>HSD (KL)</th>
@@ -84,6 +85,7 @@
             <tr>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $purchase->date ? \Carbon\Carbon::parse($purchase->date)->format('d-m-Y') : '-' }}</td>
+                <td>{{ $purchase->remarks ?: '-' }}</td>
                 <td>{{ $ms / 1000 }}</td>
                 <td>{{ $ms }}</td>
                 <td>{{ $hsd / 1000 }}</td>
@@ -95,7 +97,7 @@
             @endforeach
             @if(count($purchases) > 0)
             <tr style="background-color: #e2e8f0; font-weight: bold;">
-                <td colspan="2">TOTAL</td>
+                <td colspan="3">TOTAL</td>
                 <td>{{ $t_ms_kl > 0 ? $t_ms_kl : '0' }}</td>
                 <td>{{ $t_ms > 0 ? $t_ms : '0' }}</td>
                 <td>{{ $t_hsd_kl > 0 ? $t_hsd_kl : '0' }}</td>

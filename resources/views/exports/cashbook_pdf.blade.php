@@ -66,21 +66,23 @@
     <table>
         <thead>
             <tr>
-                <th colspan="5" class="section-title">RECEIPTS FROM PUMP</th>
+                <th colspan="6" class="section-title">RECEIPTS FROM PUMP</th>
                 <th class="spacer" style="border:none;background:none;"></th>
-                <th colspan="5" class="section-title">PAYMENTS</th>
+                <th colspan="6" class="section-title">PAYMENTS</th>
             </tr>
             <tr>
                 <th>DATE</th>
                 <th>PARTICULARS</th>
                 <th>CASH</th>
                 <th>BANK</th>
+                <th>COIN</th>
                 <th>REMARK</th>
                 <th class="spacer" style="border:none;background:none;"></th>
                 <th>DATE</th>
                 <th>PARTICULARS</th>
                 <th>CASH</th>
                 <th>BANK</th>
+                <th>COIN</th>
                 <th>REMARK</th>
             </tr>
         </thead>
@@ -95,6 +97,7 @@
                     <td class="text-left">{{ $r ? $r->particulars : '' }}</td>
                     <td>{{ $r && $r->cash_amount > 0 ? number_format($r->cash_amount, 2) : '' }}</td>
                     <td>{{ $r && $r->bank_amount > 0 ? number_format($r->bank_amount, 2) : '' }}</td>
+                    <td>{{ $r && $r->coin > 0 ? number_format($r->coin, 2) : '' }}</td>
                     <td class="text-left">{{ $r ? $r->remark : '' }}</td>
                     
                     <td class="spacer" style="border:none;background:none;"></td>
@@ -103,6 +106,7 @@
                     <td class="text-left">{{ $p ? $p->particulars : '' }}</td>
                     <td>{{ $p && $p->cash_amount > 0 ? number_format($p->cash_amount, 2) : '' }}</td>
                     <td>{{ $p && $p->bank_amount > 0 ? number_format($p->bank_amount, 2) : '' }}</td>
+                    <td>{{ $p && $p->coin > 0 ? number_format($p->coin, 2) : '' }}</td>
                     <td class="text-left">{{ $p ? $p->remark : '' }}</td>
                 </tr>
             @endfor
@@ -111,6 +115,7 @@
                 <th>TOTAL</th>
                 <th>{{ $rCashTotal > 0 ? number_format($rCashTotal, 2) : '' }}</th>
                 <th>{{ $rBankTotal > 0 ? number_format($rBankTotal, 2) : '' }}</th>
+                <th>{{ $rCoinTotal > 0 ? number_format($rCoinTotal, 2) : '' }}</th>
                 <th></th>
                 
                 <th class="spacer" style="border:none;background:none;"></th>
@@ -119,6 +124,7 @@
                 <th>TOTAL</th>
                 <th>{{ $pCashTotal > 0 ? number_format($pCashTotal, 2) : '' }}</th>
                 <th>{{ $pBankTotal > 0 ? number_format($pBankTotal, 2) : '' }}</th>
+                <th>{{ $pCoinTotal > 0 ? number_format($pCoinTotal, 2) : '' }}</th>
                 <th></th>
             </tr>
             <tr>
@@ -126,10 +132,12 @@
                 <th>NET BALANCE</th>
                 <th style="color: {{ ($rCashTotal - $pCashTotal) >= 0 ? '#166534' : '#991b1b' }}">{{ number_format($rCashTotal - $pCashTotal, 2) }}</th>
                 <th style="color: {{ ($rBankTotal - $pBankTotal) >= 0 ? '#166534' : '#991b1b' }}">{{ number_format($rBankTotal - $pBankTotal, 2) }}</th>
+                <th style="color: {{ ($rCoinTotal - $pCoinTotal) >= 0 ? '#166534' : '#991b1b' }}">{{ number_format($rCoinTotal - $pCoinTotal, 2) }}</th>
                 <th></th>
                 
                 <th class="spacer" style="border:none;background:none;"></th>
 
+                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>

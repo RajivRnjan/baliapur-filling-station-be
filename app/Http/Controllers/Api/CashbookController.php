@@ -53,8 +53,10 @@ class CashbookController extends Controller
             $totals = [
                 'receipts_cash' => floatval($receiptsQuery->sum('cash_amount')),
                 'receipts_bank' => floatval($receiptsQuery->sum('bank_amount')),
+                'receipts_coin' => floatval($receiptsQuery->sum('coin')),
                 'payments_cash' => floatval($paymentsQuery->sum('cash_amount')),
                 'payments_bank' => floatval($paymentsQuery->sum('bank_amount')),
+                'payments_coin' => floatval($paymentsQuery->sum('coin')),
             ];
 
             $perPage = intval($request->get('per_page', 20));
@@ -83,6 +85,7 @@ class CashbookController extends Controller
                 'particulars' => 'required|string|max:255',
                 'cash_amount' => 'nullable|numeric|min:0',
                 'bank_amount' => 'nullable|numeric|min:0',
+                'coin' => 'nullable|numeric|min:0',
                 'remark' => 'nullable|string|max:255',
             ]);
 
@@ -92,6 +95,7 @@ class CashbookController extends Controller
                 'particulars' => $request->particulars,
                 'cash_amount' => $request->cash_amount ?? 0.00,
                 'bank_amount' => $request->bank_amount ?? 0.00,
+                'coin' => $request->coin ?? 0.00,
                 'remark' => $request->remark,
             ]);
 
@@ -142,6 +146,7 @@ class CashbookController extends Controller
                 'particulars' => 'required|string|max:255',
                 'cash_amount' => 'nullable|numeric|min:0',
                 'bank_amount' => 'nullable|numeric|min:0',
+                'coin' => 'nullable|numeric|min:0',
                 'remark' => 'nullable|string|max:255',
             ]);
 
@@ -151,6 +156,7 @@ class CashbookController extends Controller
                 'particulars' => $request->particulars,
                 'cash_amount' => $request->cash_amount ?? 0.00,
                 'bank_amount' => $request->bank_amount ?? 0.00,
+                'coin' => $request->coin ?? 0.00,
                 'remark' => $request->remark,
             ]);
 
@@ -230,13 +236,13 @@ class CashbookController extends Controller
                 $file = fopen('php://output', 'w');
                 
                 // Top Titles
-                fputcsv($file, ['', 'RECEIPTS FROM PUMP', '', '', '', '', '', 'PAYMENTS', '', '', '']);
+                fputcsv($file, ['', 'RECEIPTS FROM PUMP', '', '', '', '', '', 'PAYMENTS', '', '', '', '']);
                 
                 // Column Headers
                 fputcsv($file, [
-                    'DATE', 'PARTICULARS', 'CASH', 'BANK', 'REMARK',
+                    'DATE', 'PARTICULARS', 'CASH', 'BANK', 'COIN', 'REMARK',
                     '', // Spacer
-                    'DATE', 'PARTICULARS', 'CASH', 'BANK', 'REMARK'
+                    'DATE', 'PARTICULARS', 'CASH', 'BANK', 'COIN', 'REMARK'
                 ]);
 
                 for ($i = 0; $i < $maxRows; $i++) {
@@ -248,6 +254,7 @@ class CashbookController extends Controller
                         $r ? $r->particulars : '',
                         $r ? ($r->cash_amount > 0 ? $r->cash_amount : '') : '',
                         $r ? ($r->bank_amount > 0 ? $r->bank_amount : '') : '',
+                        $r ? ($r->coin > 0 ? $r->coin : '') : '',
                         $r ? $r->remark : '',
                         
                         '', // Spacer column
@@ -256,6 +263,7 @@ class CashbookController extends Controller
                         $p ? $p->particulars : '',
                         $p ? ($p->cash_amount > 0 ? $p->cash_amount : '') : '',
                         $p ? ($p->bank_amount > 0 ? $p->bank_amount : '') : '',
+                        $p ? ($p->coin > 0 ? $p->coin : '') : '',
                         $p ? $p->remark : ''
                     ];
 
@@ -265,20 +273,22 @@ class CashbookController extends Controller
                 // Totals Row
                 $rCashTotal = $receipts->sum('cash_amount');
                 $rBankTotal = $receipts->sum('bank_amount');
+                $rCoinTotal = $receipts->sum('coin');
                 $pCashTotal = $payments->sum('cash_amount');
                 $pBankTotal = $payments->sum('bank_amount');
+                $pCoinTotal = $payments->sum('coin');
                 
                 fputcsv($file, [
-                    '', 'TOTAL', $rCashTotal > 0 ? $rCashTotal : '', $rBankTotal > 0 ? $rBankTotal : '', '',
+                    '', 'TOTAL', $rCashTotal > 0 ? $rCashTotal : '', $rBankTotal > 0 ? $rBankTotal : '', $rCoinTotal > 0 ? $rCoinTotal : '', '',
                     '',
-                    '', 'TOTAL', $pCashTotal > 0 ? $pCashTotal : '', $pBankTotal > 0 ? $pBankTotal : '', ''
+                    '', 'TOTAL', $pCashTotal > 0 ? $pCashTotal : '', $pBankTotal > 0 ? $pBankTotal : '', $pCoinTotal > 0 ? $pCoinTotal : '', ''
                 ]);
 
                 // Net Balance Row
                 fputcsv($file, [
-                    '', 'NET BALANCE', ($rCashTotal - $pCashTotal), ($rBankTotal - $pBankTotal), '',
+                    '', 'NET BALANCE', ($rCashTotal - $pCashTotal), ($rBankTotal - $pBankTotal), ($rCoinTotal - $pCoinTotal), '',
                     '',
-                    '', '', '', '', ''
+                    '', '', '', '', '', ''
                 ]);
 
                 fclose($file);
@@ -322,8 +332,10 @@ class CashbookController extends Controller
 
             $rCashTotal = $receipts->sum('cash_amount');
             $rBankTotal = $receipts->sum('bank_amount');
+            $rCoinTotal = $receipts->sum('coin');
             $pCashTotal = $payments->sum('cash_amount');
             $pBankTotal = $payments->sum('bank_amount');
+            $pCoinTotal = $payments->sum('coin');
 
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.cashbook_pdf', [
                 'receipts' => $receipts,
@@ -331,8 +343,10 @@ class CashbookController extends Controller
                 'maxRows' => $maxRows,
                 'rCashTotal' => $rCashTotal,
                 'rBankTotal' => $rBankTotal,
+                'rCoinTotal' => $rCoinTotal,
                 'pCashTotal' => $pCashTotal,
                 'pBankTotal' => $pBankTotal,
+                'pCoinTotal' => $pCoinTotal,
                 'startDate' => $request->start_date ?? null,
                 'endDate' => $request->end_date ?? null
             ])->setPaper('a4', 'landscape');
