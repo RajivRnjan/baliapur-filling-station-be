@@ -15,10 +15,10 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->role !== 'SUPER_ADMIN') {
+            if (!in_array($request->user()->role, ['SUPER_ADMIN', 'ADMIN'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Unauthorized. Only Super Admin can view admin/staff list.'
+                    'message' => 'Unauthorized. Only Super Admin and Admin can view admin/staff list.'
                 ], 403);
             }
 
